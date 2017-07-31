@@ -45,12 +45,15 @@ I haven't tested it with Python 2 -- it might work, it might not, but why bother
 Installation
 ------
 
-To install, run:
+It's actually on PyPI, because why not:
+    
+    pip install joypy
+
+To install from github, run:
 
     git clone git@github.com:sbebo/joypy.git
     cd joypy
     pip install .
-
 
 License
 -------
