@@ -68,7 +68,7 @@ def joyplot(data, column=None, by=None, grid=False,
         fade=True, ylim='max', 
         fill=True, linecolor=None, 
         overlap=1, background=None,
-        labels=None, xlabels=True, 
+        labels=None, xlabels=True, ylabels=True, 
         range_style='all',
         x_range=None,
         title=None, legend=True,
@@ -78,11 +78,13 @@ def joyplot(data, column=None, by=None, grid=False,
     using matplotlib and pandas.
     
     A joyplot is a stack of vertically aligned density plots / histograms.
-    By default, it will plot a density plot for each column.
+    By default, if 'data' is a DataFrame,
+    this function will plot a density plot for each column.
     
     This wrapper method tries to convert whatever structure is given
     to a nested collection of lists with additional information
-    on labels.
+    on labels, and use the private _joyploy function to actually 
+    draw theh plot.
     
     Parameters
     ----------
@@ -116,6 +118,7 @@ def joyplot(data, column=None, by=None, grid=False,
     if column is not None:
         if not isinstance(column, (list, np.ndarray)):
             column = [column]
+
  
     def _grouped_df_to_standard(grouped, column):
         converted = []
@@ -188,6 +191,9 @@ def joyplot(data, column=None, by=None, grid=False,
         labels = None
         sublabels = None 
     
+    if ylabels is False:
+        labels = None
+
     return _joyplot(converted, labels=labels, sublabels=sublabels,
             grid=grid,
             xlabelsize=xlabelsize, xrot=xrot, ylabelsize=ylabelsize, yrot=yrot,
@@ -203,7 +209,7 @@ def joyplot(data, column=None, by=None, grid=False,
 
 ###########################################
 
-def plot_density(ax, x_range, v, kind="smoothed", bw_method=None, 
+def plot_density(ax, x_range, v, kind="kde", bw_method=None, 
         bins=50, n_smoothing=5,
         fill=False, linecolor=None, clip_on=True, **kwargs):
     """ Draw a density plot given an axis, an array of values v and an array 
@@ -220,6 +226,8 @@ def plot_density(ax, x_range, v, kind="smoothed", bw_method=None,
         # We compute here the middle of the bins.
         x_range = _moving_average(x_range, 2)
     elif kind == "values":
+        # Warning: to use values and get a meaningful visualization,
+        # x_range must also be manually set in the main function.
         y = v
         x_range = list(range(len(y)))
     else:
@@ -301,8 +309,8 @@ def _joyplot(data,
     if sublabels is None:
         legend = False
 
-    ygrid = (grid is True or grid == "y")
-    xgrid = (grid is True or grid == 'x')
+    ygrid = (grid is True or grid == 'y' or grid == 'both')
+    xgrid = (grid is True or grid == 'x' or grid == 'both')
 
     num_axes = len(data)
     
@@ -398,10 +406,11 @@ def _joyplot(data,
     # Since the y range in the subplots can vary significantly,
     # different options are available.
     if ylim == 'max':
-        # Set all yaxis limit to the same value (max among all)
+        # Set all yaxis limit to the same value (max range among all)
         max_ylim = max(a.get_ylim()[1] for a in _axes)
+        min_ylim = min(a.get_ylim()[0] for a in _axes)
         for a in _axes:
-            a.set_ylim([-0.1*max_ylim, max_ylim])
+            a.set_ylim([min_ylim - 0.1*(max_ylim-min_ylim), max_ylim])
     
     elif ylim == 'own':
         # Do nothing, each axis keeps its own ylim
