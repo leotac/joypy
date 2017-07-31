@@ -42,6 +42,16 @@ Not sure what are the oldest supported versions.
 As long as you have somewhat recent versions, you should be fine.
 I haven't tested it with Python 2 -- it might work, it might not, but why bother?
 
+Installation
+------
+
+To install, run:
+
+    git clone git@github.com:sbebo/joypy.git
+    cd joypy
+    pip install .
+
+
 License
 -------
 
