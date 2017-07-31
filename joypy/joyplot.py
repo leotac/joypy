@@ -1,12 +1,12 @@
 import numpy as np
 from pandas.plotting._tools import (_subplots, _flatten)
 from matplotlib import pyplot as plt
-from pandas import DataFrame, Series
+from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
 from pandas.core.groupby import DataFrameGroupBy
 from scipy.stats import gaussian_kde
 
-_DEBUG=False
+_DEBUG = False
 
 def _x_range(data, extra=0.2):
     """ Compute the x_range, i.e., the values for which the
@@ -15,7 +15,8 @@ def _x_range(data, extra=0.2):
         also has a bit of a tail on both sides.
     """
     sample_range = np.nanmax(data) - np.nanmin(data)
-    return np.linspace(np.nanmin(data) - extra*sample_range, np.nanmax(data) + extra*sample_range, 1000)
+    return np.linspace(np.nanmin(data) - extra*sample_range,
+                       np.nanmax(data) + extra*sample_range, 1000)
 
 def _setup_axis(ax, x_range, col_name=None, grid=False):
     """ Setup the axis for the joyploy:
@@ -32,8 +33,8 @@ def _setup_axis(ax, x_range, col_name=None, grid=False):
     else:
         ax.yaxis.set_visible(False)
     ax.patch.set_alpha(0)
-    ax.set_xlim([min(x_range),max(x_range)])
-    ax.tick_params(axis='both', which='both',length=0, pad=10)
+    ax.set_xlim([min(x_range), max(x_range)])
+    ax.tick_params(axis='both', which='both', length=0, pad=10)
     ax.xaxis.set_visible(_DEBUG)
     ax.set_frame_on(_DEBUG)
 
@@ -41,7 +42,7 @@ def _is_numeric(x):
     """ Whether the array x is numeric. """
     return all(is_number(i) for i in x)
 
-def _get_alpha(i, n, start = 0.4, end = 1.0):
+def _get_alpha(i, n, start=0.4, end=1.0):
     """ Compute alpha value at position i out of n """
     return start + (1 + i)*(end - start)/n
 
@@ -49,8 +50,8 @@ def _remove_na(l):
     """ Remove NA values. Should work for lists, arrays, series. """
     return Series(l).dropna().values
 
-def _moving_average(a, n=3, zero_padded=False) :
-    """ Moving average of order n. 
+def _moving_average(a, n=3, zero_padded=False):
+    """ Moving average of order n.
         If zero padded, returns an array of the same size as
         the input: the values before a[0] are considered to be 0.
         Otherwise, returns an array of length len(a) - n + 1 """
@@ -61,31 +62,31 @@ def _moving_average(a, n=3, zero_padded=False) :
     else:
         return ret[n - 1:] / n
 
-def joyplot(data, column=None, by=None, grid=False, 
-        xlabelsize=None, xrot=None, ylabelsize=None, yrot=None, 
-        ax=None, figsize=None, 
-        hist=False, bins=10, 
-        fade=True, ylim='max', 
-        fill=True, linecolor=None, 
-        overlap=1, background=None,
-        labels=None, xlabels=True, ylabels=True, 
-        range_style='all',
-        x_range=None,
-        title=None, legend=True,
-        **kwds):
+def joyplot(data, column=None, by=None, grid=False,
+            xlabelsize=None, xrot=None, ylabelsize=None, yrot=None,
+            ax=None, figsize=None,
+            hist=False, bins=10,
+            fade=True, ylim='max',
+            fill=True, linecolor=None,
+            overlap=1, background=None,
+            labels=None, xlabels=True, ylabels=True,
+            range_style='all',
+            x_range=None,
+            title=None, legend=True,
+            **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
     using matplotlib and pandas.
-    
+
     A joyplot is a stack of vertically aligned density plots / histograms.
     By default, if 'data' is a DataFrame,
     this function will plot a density plot for each column.
-    
+
     This wrapper method tries to convert whatever structure is given
     to a nested collection of lists with additional information
-    on labels, and use the private _joyploy function to actually 
+    on labels, and use the private _joyploy function to actually
     draw theh plot.
-    
+
     Parameters
     ----------
     data : DataFrame, Series or nested collection
@@ -119,7 +120,7 @@ def joyplot(data, column=None, by=None, grid=False,
         if not isinstance(column, (list, np.ndarray)):
             column = [column]
 
- 
+
     def _grouped_df_to_standard(grouped, column):
         converted = []
         labels = []
@@ -127,16 +128,17 @@ def joyplot(data, column=None, by=None, grid=False,
             if column is not None:
                 group = group[column]
             labels.append(key)
-            converted.append([_remove_na(group[col]) for col in group.columns if _is_numeric(group[col])])
+            converted.append([_remove_na(group[c]) for c in group.columns if _is_numeric(group[c])])
             if i == 0:
                 sublabels = [col for col in group.columns if _is_numeric(group[col])]
         return converted, labels, sublabels
-    
+
     #################################################################
     # GROUPED
     # - given a grouped DataFrame, a group by key, or a dict of dicts of Series/lists/arrays
     # - select the required columns/Series/lists/arrays
-    # - convert to standard format: list of lists of non-null arrays + extra parameters (labels and sublabels)
+    # - convert to standard format: list of lists of non-null arrays
+    #   + extra parameters (labels and sublabels)
     #################################################################
     if isinstance(data, DataFrameGroupBy):
         grouped = data
@@ -152,7 +154,7 @@ def joyplot(data, column=None, by=None, grid=False,
     elif isinstance(data, dict) and all(isinstance(g, dict) for g in data.values()):
         grouped = data
         if labels is None:
-            labels = list(grouped.keys()) 
+            labels = list(grouped.keys())
         converted = []
         for i, (key, group) in enumerate(grouped.items()):
             if column is not None:
@@ -164,7 +166,7 @@ def joyplot(data, column=None, by=None, grid=False,
                 if i == 0:
                     sublabels = [k for k,g in group.items() if _is_numeric(g)]
     #################################################################
-    # PLAIN: 
+    # PLAIN:
     # - given a DataFrame or list/dict of Series/lists/arrays
     # - select the required columns/Series/lists/arrays
     # - convert to standard format: list of lists of non-null arrays + extra parameter (labels)
@@ -172,47 +174,47 @@ def joyplot(data, column=None, by=None, grid=False,
     elif isinstance(data, DataFrame):
         if column is not None:
             data = data[column]
-        converted = [ [_remove_na(data[col])] for col in data.columns if _is_numeric(data[col]) ]
-        labels = [ col for col in data.columns if _is_numeric(data[col]) ]
-        sublabels = None 
+        converted = [[_remove_na(data[col])] for col in data.columns if _is_numeric(data[col])]
+        labels = [col for col in data.columns if _is_numeric(data[col])]
+        sublabels = None
     elif isinstance(data, dict):
         if column is not None:
-            converted = [ [_remove_na(g)] for k,g in data.items() if _is_numeric(g) and k in column]
+            converted = [[_remove_na(g)] for k,g in data.items() if _is_numeric(g) and k in column]
             labels = [k for k,g in data.items() if _is_numeric(g) and k in column]
         else:
-            converted = [ [_remove_na(g)] for k,g in data.items() if _is_numeric(g)]
+            converted = [[_remove_na(g)] for k,g in data.items() if _is_numeric(g)]
             labels = [k for k,g in data.items() if _is_numeric(g)]
-        sublabels = None 
+        sublabels = None
     elif isinstance(data, list):
         if column is not None:
-            converted = [ _remove_na(g) for g in data if _is_numeric(g) and i in column]
+            converted = [_remove_na(g) for g in data if _is_numeric(g) and i in column]
         else:
-            converted = [ _remove_na(g) for g in data if _is_numeric(g)]
+            converted = [_remove_na(g) for g in data if _is_numeric(g)]
         labels = None
-        sublabels = None 
-    
+        sublabels = None
+
     if ylabels is False:
         labels = None
 
     return _joyplot(converted, labels=labels, sublabels=sublabels,
-            grid=grid,
-            xlabelsize=xlabelsize, xrot=xrot, ylabelsize=ylabelsize, yrot=yrot,
-            ax=ax, figsize=figsize,
-        hist=hist, bins=bins,
-        fade=fade, ylim=ylim,
-        fill=fill, linecolor=linecolor,
-        overlap=overlap, background=background,
-        xlabels=xlabels,
-        range_style=range_style, x_range=x_range,
-        title=title, legend=legend,
-        **kwds)
+                    grid=grid,
+                    xlabelsize=xlabelsize, xrot=xrot, ylabelsize=ylabelsize, yrot=yrot,
+                    ax=ax, figsize=figsize,
+                    hist=hist, bins=bins,
+                    fade=fade, ylim=ylim,
+                    fill=fill, linecolor=linecolor,
+                    overlap=overlap, background=background,
+                    xlabels=xlabels,
+                    range_style=range_style, x_range=x_range,
+                    title=title, legend=legend,
+                    **kwds)
 
 ###########################################
 
-def plot_density(ax, x_range, v, kind="kde", bw_method=None, 
-        bins=50, n_smoothing=5,
-        fill=False, linecolor=None, clip_on=True, **kwargs):
-    """ Draw a density plot given an axis, an array of values v and an array 
+def plot_density(ax, x_range, v, kind="kde", bw_method=None,
+                 bins=50,
+                 fill=False, linecolor=None, clip_on=True, **kwargs):
+    """ Draw a density plot given an axis, an array of values v and an array
         of x positions where to return the estimated density.
     """
     v = _remove_na(v)
@@ -232,50 +234,50 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         x_range = list(range(len(y)))
     else:
         return NotImplementedError
-  
+
     if fill:
-        p=ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
-        
+        ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
+
         # Hack to have a border at the bottom at the fill patch
         # (of the same color of the fill patch)
         # so that the fill reaches the same bottom margin as the edge lines
-        # with y value = 0.0 
+        # with y value = 0.0
         kw = kwargs
         kw["label"] = None
-        ax.plot(x_range, [0.0]*len(x_range), clip_on=clip_on,**kw)
-    
+        ax.plot(x_range, [0.0]*len(x_range), clip_on=clip_on, **kw)
+
     if linecolor is not None:
         kwargs["color"] = linecolor
 
-    # Remove the legend labels if we are plotting filled curve: 
+    # Remove the legend labels if we are plotting filled curve:
     # we only want one entry per group in the legend (if shown).
     if fill:
         kwargs["label"] = None
-    
-    ax.plot(x_range, y, clip_on=clip_on,**kwargs)
+
+    ax.plot(x_range, y, clip_on=clip_on, **kwargs)
 
 ###########################################
 
 def _joyplot(data,
-        grid=False, 
-        labels=None, sublabels=None, 
-        subcolors=None,
-        xlabels=True,
-        xlabelsize=None, xrot=None, 
-        ylabelsize=None, yrot=None, 
-        ax=None, figsize=None, 
-        hist=False, bins=10, 
-        fade=True, 
-        xlim=None, ylim='max', 
-        fill=True, linecolor=None, 
-        overlap=1, background=None,
-        range_style='all',x_range=None, 
-        title=None, 
-        legend=False, loc="upper right",
-        **kwargs):
+             grid=False,
+             labels=None, sublabels=None,
+             subcolors=None,
+             xlabels=True,
+             xlabelsize=None, xrot=None,
+             ylabelsize=None, yrot=None,
+             ax=None, figsize=None,
+             hist=False, bins=10,
+             fade=True,
+             xlim=None, ylim='max',
+             fill=True, linecolor=None,
+             overlap=1, background=None,
+             range_style='all', x_range=None,
+             title=None,
+             legend=False, loc="upper right",
+             **kwargs):
     """
     Internal method.
-    Draw a joyplot from an appropriately nested collection of lists 
+    Draw a joyplot from an appropriately nested collection of lists
     using matplotlib and pandas.
 
     Parameters
@@ -305,7 +307,7 @@ def _joyplot(data,
 
     if fill is True and linecolor is None:
         linecolor = "k"
-   
+
     if sublabels is None:
         legend = False
 
@@ -313,13 +315,13 @@ def _joyplot(data,
     xgrid = (grid is True or grid == 'x' or grid == 'both')
 
     num_axes = len(data)
-    
+
     if x_range is None:
         global_x_range = _x_range([v for g in data for sg in g for v in sg])
     else:
         global_x_range = _x_range(x_range, 0.0)
     global_x_min, global_x_max = min(global_x_range), max(global_x_range)
-        
+
     # Each plot will have its own axis
     fig, axes = _subplots(naxes=num_axes, ax=ax, squeeze=False,
                           sharex=True, sharey=False, figsize=figsize,
@@ -327,8 +329,8 @@ def _joyplot(data,
     _axes = _flatten(axes)
 
     # The legend must be drawn in the last axis if we want it at the bottom.
-    if loc in (3,4,8) or 'lower' in str(loc):
-        legend_axis = len(grouped) - 1
+    if loc in (3, 4, 8) or 'lower' in str(loc):
+        legend_axis = num_axis - 1
     else:
         legend_axis = 0
 
@@ -343,18 +345,19 @@ def _joyplot(data,
     for i, group in enumerate(data):
         a = _axes[i]
         group_zorder = i
-        group_alpha = _get_alpha(i,num_axes) if fade else 1
-        num_subgroups = len(group) 
+        group_alpha = _get_alpha(i, num_axes) if fade else 1
+        num_subgroups = len(group)
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
-            a.hist(group, label=sublabels, alpha = group_alpha, bins=bins, range=[global_x_range.min(), global_x_range.max()], zorder=group_zorder, **kwargs)
+            a.hist(group, label=sublabels, alpha=group_alpha, bins=bins,
+                   range=[min(global_x_range), max(global_x_range)], zorder=group_zorder, **kwargs)
         else:
             for j, subgroup in enumerate(group):
-      
+
                 # Compute the x_range of the current plot
                 if range_style == 'all':
-                # All plots have the same range 
+                # All plots have the same range
                     x_range = global_x_range
                 elif range_style == 'own':
                 # Each plot has its own range
@@ -367,20 +370,20 @@ def _joyplot(data,
                     x_range = _x_range(range_style, 0.0)
                 else:
                     raise NotImplementedError("Unrecognized range style.")
-                
+
                 if sublabels is None:
                     sublabel = None
                 else:
                     sublabel = sublabels[j]
-                
+
                 if subcolors is not None:
                     kwargs["color"] = subcolors[j]
                     if not fill:
                         linecolor = subcolors[j]
-                
-                plot_density(a, x_range, subgroup, 
-                             fill=fill, linecolor=linecolor, alpha=group_alpha, label=sublabel, 
-                             zorder = group_zorder + j/(num_subgroups+1), 
+                element_zorder = group_zorder + j/(num_subgroups+1)
+                plot_density(a, x_range, subgroup,
+                             fill=fill, linecolor=linecolor, alpha=group_alpha, label=sublabel,
+                             zorder=element_zorder,
                              bins=bins, **kwargs)
 
 
@@ -401,7 +404,7 @@ def _joyplot(data,
 
 
     # Final adjustments
-   
+
     # Set the y limit for the density plots.
     # Since the y range in the subplots can vary significantly,
     # different options are available.
@@ -411,11 +414,11 @@ def _joyplot(data,
         min_ylim = min(a.get_ylim()[0] for a in _axes)
         for a in _axes:
             a.set_ylim([min_ylim - 0.1*(max_ylim-min_ylim), max_ylim])
-    
+
     elif ylim == 'own':
         # Do nothing, each axis keeps its own ylim
-        pass     
-    
+        pass
+
     else:
         # Set all yaxis max lim to the argument value ylim
         try:
@@ -426,11 +429,11 @@ def _joyplot(data,
 
     # Compute a final axis, used to apply global settings
     last_axis = fig.add_subplot(1, 1, 1)
-   
+
     # Background color
     if background is not None:
         last_axis.patch.set_facecolor(background)
-    
+
     for side in ['top', 'bottom', 'left', 'right']:
         last_axis.spines[side].set_visible(_DEBUG)
 
@@ -442,7 +445,7 @@ def _joyplot(data,
         last_axis.set_xticklabels(_axes[0].get_xticks()[1:-1])
         for t in last_axis.get_xticklabels():
             t.set_visible(True)
-        
+
         # If grid is enabled, do not allow xticks (they are ugly)
         if xgrid:
             last_axis.tick_params(axis='both', which='both',length=0)
@@ -451,16 +454,17 @@ def _joyplot(data,
 
     last_axis.yaxis.set_visible(False)
     last_axis.grid(xgrid)
-    
+
     # Last axis on the back
     last_axis.zorder = min(a.zorder for a in _axes) - 1
     _axes = list(_axes) + [last_axis]
 
     if title is not None:
         plt.title(title)
-    
+
     # The magic overlap happens here.
-    plt.tight_layout(h_pad = 5 + (- 5*(1 + overlap)))
-    
+    h_pad = 5 + (- 5*(1 + overlap))
+    plt.tight_layout(h_pad=h_pad)
+
     return fig, _axes
 

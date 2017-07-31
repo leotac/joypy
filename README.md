@@ -1,2 +1,5 @@
-# joypy
-Joyplot in matplotlib + pandas
+# JoyPy
+
+Joyplots in matplotlib + pandas
+
+
