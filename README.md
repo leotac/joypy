@@ -12,7 +12,7 @@ Whare are joyplots?
 ---
 Joyplots are stacked, partially overlapping density plots, simple as that. They are a nice way to plot data
 to visually compare distributions, especially those that change across one dimension (e.g., over time).
-Though hardly a new technique, they have become much popular lately thanks to the R package [ggjoy](https://github.com/clauswilke/ggjoy) 
+Though hardly a new technique, they have become very popular lately thanks to the R package [ggjoy](https://github.com/clauswilke/ggjoy) 
 (which is clearly much better developed/maintained than this one, so I suggest you to use that if you can use R and ggplot.)
 
 Why are they called joyplots?
