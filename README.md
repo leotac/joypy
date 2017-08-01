@@ -13,7 +13,7 @@ Whare are joyplots?
 Joyplots are stacked, partially overlapping density plots, simple as that. They are a nice way to plot data
 to visually compare distributions, especially those that change across one dimension (e.g., over time).
 Though hardly a new technique, they have become very popular lately thanks to the R package [ggjoy](https://github.com/clauswilke/ggjoy) 
-(which is clearly much better developed/maintained than this one, so I suggest you to use that if you can use R and ggplot.)
+(which is clearly much better developed/maintained than this one -- and I strongly suggest you to use that if you can use R and ggplot.)
 
 Why are they called joyplots?
 ---
@@ -28,7 +28,7 @@ Take a look at this [jupyter notebook](Joyplot.ipynb) for a couple of simple exa
 Dependencies
 ------------
 
-- Python 3.4+
+- Python 3.5+
 
 - [numpy](http://www.numpy.org/)
 
@@ -40,7 +40,7 @@ Dependencies
 
 Not sure what are the oldest supported versions. 
 As long as you have somewhat recent versions, you should be fine.
-I haven't tested it with Python 2 -- it might work, it might not, but why bother?
+I haven't tested it with Python 2 -- it might work, probably not.
 
 Installation
 ------
