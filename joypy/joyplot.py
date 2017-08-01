@@ -14,7 +14,12 @@ def _x_range(data, extra=0.2):
         the max and min so that the plot actually reaches 0, and
         also has a bit of a tail on both sides.
     """
-    sample_range = np.nanmax(data) - np.nanmin(data)
+    try:
+        sample_range = np.nanmax(data) - np.nanmin(data)
+    except ValueError:
+        return []
+    if sample_range < 1e-6:
+        return [np.nanmin(data), np.nanmax(data)]
     return np.linspace(np.nanmin(data) - extra*sample_range,
                        np.nanmax(data) + extra*sample_range, 1000)
 
@@ -72,7 +77,8 @@ def joyplot(data, column=None, by=None, grid=False,
             labels=None, xlabels=True, ylabels=True,
             range_style='all',
             x_range=None,
-            title=None, legend=True,
+            title=None,
+            colormap=None,
             **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
@@ -147,6 +153,9 @@ def joyplot(data, column=None, by=None, grid=False,
             labels = _labels
     elif by is not None and isinstance(data, DataFrame):
         grouped = data.groupby(by)
+        if column is None:
+            # Remove the groupby key. It's not automatically removed by pandas.
+            column = list(data.columns).remove(by)
         converted, _labels, sublabels = _grouped_df_to_standard(grouped, column)
         if labels is None:
             labels = _labels
@@ -206,7 +215,8 @@ def joyplot(data, column=None, by=None, grid=False,
                     overlap=overlap, background=background,
                     xlabels=xlabels,
                     range_style=range_style, x_range=x_range,
-                    title=title, legend=legend,
+                    title=title,
+                    colormap=colormap,
                     **kwds)
 
 ###########################################
@@ -218,22 +228,31 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         of x positions where to return the estimated density.
     """
     v = _remove_na(v)
+    if len(v) == 0 or len(x_range) == 0:
+        return
 
     if kind == "kde":
         gkde = gaussian_kde(v, bw_method=bw_method)
         y = gkde.evaluate(x_range)
     elif kind == "counts":
-        y, x_range = np.histogram(v, bins=bins)
+        y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
         # We compute here the middle of the bins.
-        x_range = _moving_average(x_range, 2)
+        x_range = _moving_average(bin_edges, 2)
+    elif kind == "normalized_counts":
+        y, bin_edges = np.histogram(v, bins=bins, density=False,
+                                    range=(min(x_range), max(x_range)))
+        # np.histogram returns the edges of the bins.
+        # We compute here the middle of the bins.
+        y = y / len(v)
+        x_range = _moving_average(bin_edges, 2)
     elif kind == "values":
         # Warning: to use values and get a meaningful visualization,
         # x_range must also be manually set in the main function.
         y = v
         x_range = list(range(len(y)))
     else:
-        return NotImplementedError
+        raise NotImplementedError
 
     if fill:
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
@@ -261,7 +280,6 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
 def _joyplot(data,
              grid=False,
              labels=None, sublabels=None,
-             subcolors=None,
              xlabels=True,
              xlabelsize=None, xrot=None,
              ylabelsize=None, yrot=None,
@@ -271,9 +289,10 @@ def _joyplot(data,
              xlim=None, ylim='max',
              fill=True, linecolor=None,
              overlap=1, background=None,
-             range_style='all', x_range=None,
+             range_style='all', x_range=None, tails=0.2,
              title=None,
              legend=False, loc="upper right",
+             colormap=None, color=None,
              **kwargs):
     """
     Internal method.
@@ -311,6 +330,18 @@ def _joyplot(data,
     if sublabels is None:
         legend = False
 
+    def _get_color(i, num_axes, j, num_subgroups):
+        if isinstance(color, list):
+            return color[j]
+        elif color is not None:
+            return color
+        elif isinstance(colormap, list):
+            return colormap[j](i/num_axes)
+        elif color is None and colormap is None:
+            return plt.rcParams['axes.prop_cycle'].by_key()['color'][j]
+        else:
+            return colormap(i/num_axes)
+
     ygrid = (grid is True or grid == 'y' or grid == 'both')
     xgrid = (grid is True or grid == 'x' or grid == 'both')
 
@@ -339,19 +370,23 @@ def _joyplot(data,
         assert len(labels) == num_axes
     if sublabels is not None:
         assert all(len(g) == len(sublabels) for g in data)
-    if subcolors is not None:
-        assert all(len(g) == len(subcolors) for g in data)
+    if isinstance(color, list):
+        assert all(len(g) == len(color) for g in data)
+    if isinstance(colormap, list):
+        assert all(len(g) == len(colormap) for g in data)
 
     for i, group in enumerate(data):
         a = _axes[i]
         group_zorder = i
         group_alpha = _get_alpha(i, num_axes) if fade else 1
+
         num_subgroups = len(group)
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
             a.hist(group, label=sublabels, alpha=group_alpha, bins=bins,
-                   range=[min(global_x_range), max(global_x_range)], zorder=group_zorder, **kwargs)
+                   range=[min(global_x_range), max(global_x_range)],
+                   edgecolor=linecolor, zorder=group_zorder, **kwargs)
         else:
             for j, subgroup in enumerate(group):
 
@@ -361,10 +396,10 @@ def _joyplot(data,
                     x_range = global_x_range
                 elif range_style == 'own':
                 # Each plot has its own range
-                    x_range = _x_range(subgroup, 0.3)
+                    x_range = _x_range(subgroup, tails)
                 elif range_style == 'group':
                 # Each plot has a range that covers the whole group
-                    x_range = _x_range(group, 0.3)
+                    x_range = _x_range(group, tails)
                 elif isinstance(range_style, (list, np.ndarray)):
                 # All plots have exactly the range passed as argument
                     x_range = _x_range(range_style, 0.0)
@@ -376,14 +411,15 @@ def _joyplot(data,
                 else:
                     sublabel = sublabels[j]
 
-                if subcolors is not None:
-                    kwargs["color"] = subcolors[j]
-                    if not fill:
-                        linecolor = subcolors[j]
                 element_zorder = group_zorder + j/(num_subgroups+1)
+                element_color = _get_color(i, num_axes, j, num_subgroups)
+
+                if not fill and linecolor is None:
+                    linecolor = element_color
+
                 plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, alpha=group_alpha, label=sublabel,
-                             zorder=element_zorder,
+                             zorder=element_zorder, color=element_color,
                              bins=bins, **kwargs)
 
 
