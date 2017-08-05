@@ -378,13 +378,14 @@ def _joyplot(data,
     for i, group in enumerate(data):
         a = _axes[i]
         group_zorder = i
-        group_alpha = _get_alpha(i, num_axes) if fade else 1
+        if fade:
+            kwargs['alpha'] = _get_alpha(i, num_axes)
 
         num_subgroups = len(group)
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
-            a.hist(group, label=sublabels, alpha=group_alpha, bins=bins,
+            a.hist(group, label=sublabels, bins=bins,
                    range=[min(global_x_range), max(global_x_range)],
                    edgecolor=linecolor, zorder=group_zorder, **kwargs)
         else:
@@ -418,7 +419,7 @@ def _joyplot(data,
                     linecolor = element_color
 
                 plot_density(a, x_range, subgroup,
-                             fill=fill, linecolor=linecolor, alpha=group_alpha, label=sublabel,
+                             fill=fill, linecolor=linecolor, label=sublabel,
                              zorder=element_zorder, color=element_color,
                              bins=bins, **kwargs)
 
