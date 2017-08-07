@@ -5,6 +5,7 @@ from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
 from pandas.core.groupby import DataFrameGroupBy
 from scipy.stats import gaussian_kde
+from warnings import warn
 
 _DEBUG = False
 
@@ -126,7 +127,6 @@ def joyplot(data, column=None, by=None, grid=False,
         if not isinstance(column, (list, np.ndarray)):
             column = [column]
 
-
     def _grouped_df_to_standard(grouped, column):
         converted = []
         labels = []
@@ -204,6 +204,13 @@ def joyplot(data, column=None, by=None, grid=False,
 
     if ylabels is False:
         labels = None
+
+    if all(len(subg)==0 for g in converted for subg in g):
+        raise ValueError("No numeric values found. Joyplot requires at least a numeric column/group.")
+
+    if any(len(subg)==0 for g in converted for subg in g):
+        warn("At least a column/group has no numeric values.")
+
 
     return _joyplot(converted, labels=labels, sublabels=sublabels,
                     grid=grid,
