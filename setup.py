@@ -20,6 +20,6 @@ setup(name='joypy',
           'matplotlib',
           'numpy',
           'scipy>=0.11.0',
-          'pandas'
+          'pandas>=0.20.0'
       ],
       zip_safe=False)
