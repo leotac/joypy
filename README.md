@@ -1,5 +1,8 @@
 # JoyPy
 
+[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
 JoyPy is a one-function Python package based on matplotlib + pandas with a single purpose: drawing joyplots.
 
 <img src="temperatures.png" width="600" alt="A joyplot.">
