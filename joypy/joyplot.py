@@ -201,6 +201,8 @@ def joyplot(data, column=None, by=None, grid=False,
             converted = [_remove_na(g) for g in data if _is_numeric(g)]
         labels = None
         sublabels = None
+    else:
+        raise TypeError("Unknown type for 'data': {!r}".format(type(data)))
 
     if ylabels is False:
         labels = None
