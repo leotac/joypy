@@ -215,8 +215,10 @@ def joyplot(data, column=None, by=None, grid=False,
     if ylabels is False:
         labels = None
 
-    if all(len(subg)==0 for g in converted for subg in g):
-        raise ValueError("No numeric values found. Joyplot requires at least a numeric column/group.")
+    if any(all(len(subg) < 2 for subg in g) for g in converted):
+        print([[len(subg) for subg in g] for g in converted]
+        
+        raise ValueError("At least a column/group haNo numeric values found. Joyplot requires at least a numeric column/group.")
 
     if any(len(subg)==0 for g in converted for subg in g):
         warn("At least a column/group has no numeric values.")
@@ -245,10 +247,15 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         of x positions where to return the estimated density.
     """
     v = _remove_na(v)
-    if len(v) == 0 or len(x_range) == 0:
+    if len(x_range) == 0:
+        warn("density_plot() has received an empty x_range.")
         return
 
-    if kind == "kde":
+    if len(v) < 2:
+        warn("At least two distinct values are required for a density plot. Drawing empty plot.")
+        y = [0.0]*len(x_range)
+        ax.set_ylim([0,0])
+    elif kind == "kde":
         gkde = gaussian_kde(v, bw_method=bw_method)
         y = gkde.evaluate(x_range)
     elif kind == "counts":
