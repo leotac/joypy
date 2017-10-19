@@ -1,12 +1,12 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import absolute_import
-from builtins import str
-from builtins import range
+from __future__ import division, print_function, unicode_literals, absolute_import
 
 import numpy as np
 from pandas.plotting._tools import (_subplots, _flatten)
+import os
+import matplotlib as mpl
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
 from matplotlib import pyplot as plt
 from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number

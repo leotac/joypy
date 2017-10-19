@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 import joypy
 import pandas as pd
-from matplotlib import pyplot as plt
 from matplotlib import cm
 
 import pytest
