@@ -1,6 +1,6 @@
 # JoyPy
 
-[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![Build Status](https://travis-ci.org/sbebo/joypy.svg?branch=master)](https://travis-ci.org/sbebo/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 JoyPy is a one-function Python package based on matplotlib + pandas with a single purpose: drawing joyplots.
@@ -32,16 +32,14 @@ Take a look at this [jupyter notebook](Joyplot.ipynb) for a couple of simple exa
 Dependencies
 ------------
 
-- Python 3.5+ 
-From 0.1.4, joypy should also be compatible with python 2.7.
+- Python 3.5+  
+Joypy should also be compatible with python 2.7.
 
 - [numpy](http://www.numpy.org/)
-
 - [scipy](http://www.scipy.org/) >= 0.11
-
 - [matplotlib](http://matplotlib.org/)
-
 - [pandas](http://pandas.pydata.org/) >= 0.20
+
 
 Not sure what are the oldest supported versions. 
 As long as you have somewhat recent versions, you should be fine.
