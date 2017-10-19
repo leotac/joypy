@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='joypy',
-      version='0.1.4',
+      version='0.1.5',
       description='Joyplots in python',
       long_description='Joyplots in python.',
       classifiers=[
