@@ -11,7 +11,7 @@ The code for JoyPy borrows from the code for kdes in `pandas.plotting`, and uses
 of utility functions therein. (This could be probably avoided with a little bit of
 extra effort.) 
 
-Whare are joyplots?
+What are joyplots?
 ---
 Joyplots are stacked, partially overlapping density plots, simple as that. They are a nice way to plot data
 to visually compare distributions, especially those that change across one dimension (e.g., over time).
