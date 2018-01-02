@@ -5,8 +5,7 @@ from pandas.plotting._tools import (_subplots, _flatten)
 import os
 import matplotlib as mpl
 if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using non-interactive Agg backend')
-    mpl.use('Agg')
+    mpl.use('Agg', warn=False)
 from matplotlib import pyplot as plt
 from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
