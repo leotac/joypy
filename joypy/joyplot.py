@@ -202,10 +202,12 @@ def joyplot(data, column=None, by=None, grid=False,
         sublabels = None
     elif isinstance(data, list):
         if column is not None:
-            converted = [_remove_na(g) for g in data if _is_numeric(g) and i in column]
+            converted = [[_remove_na(g)] for g in data if _is_numeric(g) and i in column]
         else:
-            converted = [_remove_na(g) for g in data if _is_numeric(g)]
-        labels = None
+            converted = [[_remove_na(g)] for g in data if _is_numeric(g)]
+        if labels and len(labels) != len(converted):
+            raise ValueError("The number of labels does not match the length of the list.")
+
         sublabels = None
     else:
         raise TypeError("Unknown type for 'data': {!r}".format(type(data)))
@@ -472,7 +474,7 @@ def _joyplot(data,
         pass
 
     else:
-        # Set all yaxis max lim to the argument value ylim
+        # Set all yaxis lim to the argument value ylim
         try:
             for a in _axes:
                 a.set_ylim(ylim)
@@ -493,8 +495,7 @@ def _joyplot(data,
     # so they have the same lims and ticks
     last_axis.set_xlim(_axes[0].get_xlim())
     if xlabels is True:
-        last_axis.set_xticks(_axes[0].get_xticks()[1:-1])
-        last_axis.set_xticklabels(_axes[0].get_xticks()[1:-1])
+        last_axis.set_xticks(np.array(_axes[0].get_xticks()[1:-1]))
         for t in last_axis.get_xticklabels():
             t.set_visible(True)
 

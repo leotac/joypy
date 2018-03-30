@@ -39,3 +39,9 @@ def test_raw_counts(temp):
                               grid="y", linewidth=1, legend=False, fade=True, figsize=(6,5),
                               title="Global daily temperature 1880-2014 \n(°C above 1950-80 average)",
                               kind="counts", bins=30)
+
+def test_raw_data():
+    x = np.arange(0, 100, 0.1)
+    y =[n*x for n in range(1,4)]
+    fig, ax = joypy.joyplot(y, labels=["a","b","c"])
+
