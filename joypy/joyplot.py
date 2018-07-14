@@ -30,7 +30,7 @@ def _x_range(data, extra=0.2):
     return np.linspace(np.nanmin(data) - extra*sample_range,
                        np.nanmax(data) + extra*sample_range, 1000)
 
-def _setup_axis(ax, x_range, col_name=None, grid=False):
+def _setup_axis(ax, x_range, col_name=None, grid=False, ylabelsize=None, yrot=None):
     """ Setup the axis for the joyploy:
         - add the y label if required (as an ytick)
         - add y grid if required
@@ -40,7 +40,7 @@ def _setup_axis(ax, x_range, col_name=None, grid=False):
     """
     if col_name is not None:
         ax.set_yticks([0])
-        ax.set_yticklabels([col_name])
+        ax.set_yticklabels([col_name], fontsize=ylabelsize, rotation=yrot)
         ax.yaxis.grid(grid)
     else:
         ax.yaxis.set_visible(False)
@@ -442,10 +442,9 @@ def _joyplot(data,
 
 
         # Setup the current axis: transparency, labels, spines.
-        if labels is None:
-            _setup_axis(a, global_x_range, col_name=None, grid=ygrid)
-        else:
-            _setup_axis(a, global_x_range, col_name=labels[i], grid=ygrid)
+        col_name = None if labels is None else labels[i]
+        _setup_axis(a, global_x_range, col_name=col_name, grid=ygrid,
+                ylabelsize=ylabelsize, yrot=yrot)
 
         # When needed, draw the legend
         if legend and i == legend_axis:
@@ -498,6 +497,8 @@ def _joyplot(data,
         last_axis.set_xticks(np.array(_axes[0].get_xticks()[1:-1]))
         for t in last_axis.get_xticklabels():
             t.set_visible(True)
+            t.set_fontsize(xlabelsize)
+            t.set_rotation(xrot)
 
         # If grid is enabled, do not allow xticks (they are ugly)
         if xgrid:
@@ -508,6 +509,7 @@ def _joyplot(data,
     last_axis.yaxis.set_visible(False)
     last_axis.grid(xgrid)
 
+
     # Last axis on the back
     last_axis.zorder = min(a.zorder for a in _axes) - 1
     _axes = list(_axes) + [last_axis]
@@ -515,9 +517,11 @@ def _joyplot(data,
     if title is not None:
         plt.title(title)
 
+
     # The magic overlap happens here.
     h_pad = 5 + (- 5*(1 + overlap))
-    plt.tight_layout(h_pad=h_pad)
+    fig.tight_layout(h_pad=h_pad)
+
 
     return fig, _axes
 
