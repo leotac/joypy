@@ -402,7 +402,7 @@ def _joyplot(data,
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
-            a.hist(group, label=sublabels, bins=bins,
+            a.hist(group, label=sublabels, bins=bins, color=color,
                    range=[min(global_x_range), max(global_x_range)],
                    edgecolor=linecolor, zorder=group_zorder, **kwargs)
         else:
