@@ -31,7 +31,7 @@ def _x_range(data, extra=0.2):
                        np.nanmax(data) + extra*sample_range, 1000)
 
 def _setup_axis(ax, x_range, col_name=None, grid=False, ylabelsize=None, yrot=None):
-    """ Setup the axis for the joyploy:
+    """ Setup the axis for the joyplot:
         - add the y label if required (as an ytick)
         - add y grid if required
         - make the background transparent
@@ -97,7 +97,7 @@ def joyplot(data, column=None, by=None, grid=False,
 
     This wrapper method tries to convert whatever structure is given
     to a nested collection of lists with additional information
-    on labels, and use the private _joyploy function to actually
+    on labels, and use the private _joyplot function to actually
     draw theh plot.
 
     Parameters
