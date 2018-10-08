@@ -448,6 +448,7 @@ def _joyplot(data,
             a.legend(loc=loc)
             # Bypass alpha values, in case
             for p in a.get_legend().get_patches():
+                p.set_facecolor(p.get_facecolor())
                 p.set_alpha(1.0)
             for l in a.get_legend().get_lines():
                 l.set_alpha(1.0)
