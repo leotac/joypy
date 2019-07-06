@@ -1,15 +1,15 @@
 from setuptools import setup
 
 setup(name='joypy',
-      version='0.1.10',
+      version='0.2.0',
       description='Joyplots in python',
       long_description='Joyplots in python.',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Visualization',
       ],
       url='http://github.com/sbebo/joypy',
