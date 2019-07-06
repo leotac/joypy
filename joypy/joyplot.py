@@ -1,11 +1,6 @@
-from __future__ import division, print_function, unicode_literals, absolute_import
-
 import numpy as np
 from pandas.plotting._tools import (_subplots, _flatten)
 import os
-import matplotlib as mpl
-if os.environ.get('DISPLAY','') == '':
-    mpl.use('Agg', warn=False)
 from matplotlib import pyplot as plt
 from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
