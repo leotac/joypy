@@ -250,8 +250,12 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         return
 
     if kind == "kde":
-        gkde = gaussian_kde(v, bw_method=bw_method)
-        y = gkde.evaluate(x_range)
+        try:
+            gkde = gaussian_kde(v, bw_method=bw_method)
+            y = gkde.evaluate(x_range)
+        except ValueError:
+            # Handle cases where there is no data in a group.
+            y = np.zeros_like(x_range)
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
