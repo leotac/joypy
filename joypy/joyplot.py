@@ -265,9 +265,9 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 # that should have infinite density,
                 # return a δ(val)
                 val = distinct_values[0]
-                warnings.warn(f"The data contains a group with a single distinct value {val} "
-                               "that should have infinite density. "
-                               "Consider using a different visualization or adding noise.")
+                warnings.warn("The data contains a group with a single distinct value ({}) "
+                              "having infinite probability density. "
+                              "Consider using a different visualization.".format(val))
 
                 # Find index i of x_range
                 # such that x_range[i-1] < val ≤ x_range[i]
