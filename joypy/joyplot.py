@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from scipy.stats import gaussian_kde
+import warnings
 
 try:
     from pandas.plotting._tools import (_subplots, _flatten)
@@ -256,6 +257,27 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         except ValueError:
             # Handle cases where there is no data in a group.
             y = np.zeros_like(x_range)
+        except np.linalg.LinAlgError as e:
+            # Handle singular matrix in kde computation.
+            distinct_values = np.unique(v)
+            if len(distinct_values) == 1:
+                # In case of a group with a single value val,
+                # that should have infinite density,
+                # return a δ(val)
+                val = distinct_values[0]
+                warnings.warn("The data contains a group with a single distinct value ({}) "
+                              "having infinite probability density. "
+                              "Consider using a different visualization.".format(val))
+
+                # Find index i of x_range
+                # such that x_range[i-1] < val ≤ x_range[i]
+                i = np.searchsorted(x_range, val)
+
+                y = np.zeros_like(x_range)
+                y[i] = 1
+            else:
+                raise e
+
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
