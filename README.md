@@ -34,7 +34,7 @@ Dependencies
 ------------
 
 - Python 3.5+  
-Compatibility with python 2.7 has been dropped with release 1.11.
+Compatibility with python 2.7 has been dropped with release 0.2.0.
 
 - [numpy](http://www.numpy.org/)
 - [scipy](http://www.scipy.org/) >= 0.11
