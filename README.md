@@ -1,6 +1,6 @@
 # JoyPy
 
-[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![python version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/download/releases/3.5.0/)  [![Build Status](https://travis-ci.org/sbebo/joypy.svg?branch=master)](https://travis-ci.org/sbebo/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![python version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/download/releases/3.5.0/)  [![Build Status](https://travis-ci.org/sbebo/joypy.svg?branch=master)](https://travis-ci.org/sbebo/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](https://pepy.tech/badge/joypy)](https://pepy.tech/project/joypy)
 
 
 JoyPy is a one-function Python package based on matplotlib + pandas with a single purpose: drawing joyplots.
