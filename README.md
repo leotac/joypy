@@ -39,7 +39,7 @@ Compatibility with python 2.7 has been dropped with release 0.2.0.
 - [numpy](http://www.numpy.org/)
 - [scipy](http://www.scipy.org/) >= 0.11
 - [matplotlib](http://matplotlib.org/)
-- [pandas](http://pandas.pydata.org/) >= 0.20
+- [pandas](http://pandas.pydata.org/) >= 0.20  **Warning**:compatibility with pandas >= 0.25 requires joypy >= 0.2.1
 
 
 Not sure what are the oldest supported versions. 
