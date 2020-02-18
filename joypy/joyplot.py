@@ -89,6 +89,7 @@ def joyplot(data, column=None, by=None, grid=False,
             title=None,
             colormap=None,
             color=None,
+            colored_groups=False,
             **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
@@ -128,6 +129,8 @@ def joyplot(data, column=None, by=None, grid=False,
     hist : boolean, default False
     bins : integer, default 10
         Number of histogram bins to be used
+    colored_groups : boolean, default False
+        If True AND no subgroups, the groups themselves will be colored
     kwds : other plotting keyword arguments
         To be passed to hist/kde plot function
     """
@@ -238,6 +241,7 @@ def joyplot(data, column=None, by=None, grid=False,
                     title=title,
                     colormap=colormap,
                     color=color,
+                    colored_groups=colored_groups,
                     **kwds)
 
 ###########################################
@@ -338,7 +342,7 @@ def _joyplot(data,
              range_style='all', x_range=None, tails=0.2,
              title=None,
              legend=False, loc="upper right",
-             colormap=None, color=None,
+             colormap=None, color=None, colored_groups=False,
              **kwargs):
     """
     Internal method.
@@ -459,7 +463,10 @@ def _joyplot(data,
                     sublabel = sublabels[j]
 
                 element_zorder = group_zorder + j/(num_subgroups+1)
-                element_color = _get_color(i, num_axes, j, num_subgroups)
+                if ((len(group) == 1) & (colored_groups)):
+                    element_color = _get_color(i, num_axes, i, num_subgroups)
+                else:
+                    element_color = _get_color(i, num_axes, j, num_subgroups)
 
                 plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, label=sublabel,
