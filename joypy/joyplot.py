@@ -88,6 +88,7 @@ def joyplot(data, column=None, by=None, grid=False,
             x_range=None,
             title=None,
             colormap=None,
+            color=None,
             **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
@@ -236,6 +237,7 @@ def joyplot(data, column=None, by=None, grid=False,
                     range_style=range_style, x_range=x_range,
                     title=title,
                     colormap=colormap,
+                    color=color,
                     **kwds)
 
 ###########################################
@@ -415,7 +417,7 @@ def _joyplot(data,
     if sublabels is not None:
         assert all(len(g) == len(sublabels) for g in data)
     if isinstance(color, list):
-        assert all(len(g) == len(color) for g in data)
+        assert all(len(g) <= len(color) for g in data)
     if isinstance(colormap, list):
         assert all(len(g) == len(colormap) for g in data)
 
