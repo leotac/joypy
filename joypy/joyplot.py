@@ -417,7 +417,7 @@ def _joyplot(data,
     if sublabels is not None:
         assert all(len(g) == len(sublabels) for g in data)
     if isinstance(color, list):
-        assert all(len(g) == len(color) for g in data)
+        assert all(len(g) <= len(color) for g in data)
     if isinstance(colormap, list):
         assert all(len(g) == len(colormap) for g in data)
 
