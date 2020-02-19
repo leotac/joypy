@@ -128,6 +128,9 @@ def joyplot(data, column=None, by=None, grid=False,
     hist : boolean, default False
     bins : integer, default 10
         Number of histogram bins to be used
+    color : color or colors to be used in the plots. It can be:
+        a string or anything interpretable as color by matplotib;
+        a list of colors. See docs / examples for more details.
     kwds : other plotting keyword arguments
         To be passed to hist/kde plot function
     """
@@ -384,7 +387,8 @@ def _joyplot(data,
         elif isinstance(colormap, list):
             return colormap[j](i/num_axes)
         elif color is None and colormap is None:
-            return plt.rcParams['axes.prop_cycle'].by_key()['color'][j]
+            num_cycle_colors = len(plt.rcParams['axes.prop_cycle'].by_key()['color'])
+            return plt.rcParams['axes.prop_cycle'].by_key()['color'][j % num_cycle_colors]
         else:
             return colormap(i/num_axes)
 
