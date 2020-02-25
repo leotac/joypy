@@ -378,7 +378,7 @@ def _joyplot(data,
 
     def _get_color(i, num_axes, j, num_subgroups):
         if isinstance(color, list):
-            return color[j]
+            return color[j] if num_subgroups > 1 else color[i]
         elif color is not None:
             return color
         elif isinstance(colormap, list):
