@@ -24,10 +24,12 @@ If you don't know Joy Division, you are lucky: you can still listen to them for 
 Here's a hint: google ["Unknown Pleasures"](https://www.youtube.com/watch?v=ncJ8FCvCofw).
 This kind of plot is now also known as *ridgeline plot*, since the original name is controversial. 
 
-Examples
+Documentation and examples
 --------
 
-Take a look at this [jupyter notebook](Joyplot.ipynb) for a couple of simple examples. 
+joypy has no real documentation.
+You're strongly encouraged to take a look at this [jupyter notebook](Joyplot.ipynb) with a growing number of examples.
+Similarly, github issues may contain some wisdom :-)
 
 Dependencies
 ------------
