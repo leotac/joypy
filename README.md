@@ -27,9 +27,24 @@ This kind of plot is now also known as *ridgeline plot*, since the original name
 Documentation and examples
 --------
 
-joypy has no real documentation.
+JoyPy has no real documentation.
 You're strongly encouraged to take a look at this [jupyter notebook](Joyplot.ipynb) with a growing number of examples.
 Similarly, github issues may contain some wisdom :-)
+
+A minimal example is the following:
+```python
+import joypy
+import pandas as pd
+
+iris = pd.read_csv("data/iris.csv")
+fig, axes = joypy.joyplot(iris)
+```
+
+By default, `joypy.joyplot()` will draw joyplot with a density subplot for each numeric column in the dataframe. The density is obtained with the `gaussian_kde` function of scipy.
+
+Note: `joyplot()` returns n+1 axes, where n is the number of visible rows (subplots).
+Each subplot has its own axis, while the last axis (`axes[-1]`) is the one that is used for things such as plotting the background or changing xticks, and is the one you might need to play with in case you want to manually tweak something.
+
 
 Dependencies
 ------------
