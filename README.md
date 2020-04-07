@@ -21,7 +21,7 @@ Though hardly a new technique, they have become very popular lately thanks to th
 Why are they called joyplots?
 ---
 If you don't know Joy Division, you are lucky: you can still listen to them for the first time!
-Here's a hint: google ["Unknown Pleasures"](https://www.youtube.com/watch?v=ncJ8FCvCofw).
+Here's a hint: google ["Unknown Pleasures"](https://www.youtube.com/watch?v=fhCLalLXHP4).
 This kind of plot is now also known as *ridgeline plot*, since the original name is controversial. 
 
 Documentation and examples
