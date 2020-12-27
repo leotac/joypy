@@ -411,7 +411,7 @@ def _joyplot(data,
 
     # The legend must be drawn in the last axis if we want it at the bottom.
     if loc in (3, 4, 8) or 'lower' in str(loc):
-        legend_axis = num_axis - 1
+        legend_axis = num_axes - 1
     else:
         legend_axis = 0
 
