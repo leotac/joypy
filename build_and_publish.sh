@@ -1,5 +1,6 @@
 #!/bin/bash
 
-bumpversion minor #bump version in all files + create commit
+bumpversion patch #major minor patch - bump version in all files
 python setup.py sdist bdist_wheel --universal
-twine upload dist/--tar.gz dist/..whl
+twine upload dist/**tar.gz dist/**whl
+rm -rf dist
