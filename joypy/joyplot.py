@@ -4,10 +4,16 @@ from scipy.stats import gaussian_kde
 import warnings
 
 try:
+    # pandas < 0.25
     from pandas.plotting._tools import (_subplots, _flatten)
-except:
-    #TODO this is a quick fix for #38
-    from pandas.plotting._matplotlib.tools import (_subplots, _flatten)
+except ImportError:
+    try:
+        #pandas >= 0.25, <1.2.0
+        from pandas.plotting._matplotlib.tools import (_subplots, _flatten)
+    except ImportError:
+        #pandas >= 1.2.0
+        from pandas.plotting._matplotlib.tools import create_subplots as _subplots
+        from pandas.plotting._matplotlib.tools import flatten_axis as _flatten
 
 from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
