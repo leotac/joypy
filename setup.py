@@ -20,7 +20,7 @@ setup(name='joypy',
       license='MIT',
       packages=['joypy'],
       install_requires=[
-          'numpy',
+          'numpy>=1.16.5',
           'scipy>=0.11.0',
           'pandas>=0.20.0',
           'matplotlib',
