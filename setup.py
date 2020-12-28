@@ -19,6 +19,7 @@ setup(name='joypy',
       author_email='leonardo.taccari@gmail.com',
       license='MIT',
       packages=['joypy'],
+      python_requires='>=3.5',
       install_requires=[
           'numpy>=1.16.5',
           'scipy>=0.11.0',
