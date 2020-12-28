@@ -13,7 +13,7 @@ except ImportError:
     except ImportError:
         #pandas >= 1.2.0
         from pandas.plotting._matplotlib.tools import create_subplots as _subplots
-        from pandas.plotting._matplotlib.tools import flatten_axis as _flatten
+        from pandas.plotting._matplotlib.tools import flatten_axes as _flatten
 
 from pandas import (DataFrame, Series)
 from pandas.core.dtypes.common import is_number
