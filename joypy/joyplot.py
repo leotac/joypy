@@ -173,7 +173,8 @@ def joyplot(data, column=None, by=None, grid=False,
         grouped = data.groupby(by)
         if column is None:
             # Remove the groupby key. It's not automatically removed by pandas.
-            column = list(data.columns).remove(by)
+            column = list(data.columns)
+            column.remove(by)
         converted, _labels, sublabels = _grouped_df_to_standard(grouped, column)
         if labels is None:
             labels = _labels
