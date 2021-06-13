@@ -1,6 +1,6 @@
 # JoyPy
 
-[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![python version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/download/releases/3.5.0/)  [![Build Status](https://travis-ci.org/sbebo/joypy.svg?branch=master)](https://travis-ci.org/sbebo/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](https://pepy.tech/badge/joypy)](https://pepy.tech/project/joypy)
+[![PyPI version](https://badge.fury.io/py/joypy.svg)](https://badge.fury.io/py/joypy) [![python version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/download/releases/3.5.0/)  [![Build Status](https://travis-ci.org/leotac/joypy.svg?branch=master)](https://travis-ci.org/leotac/joypy) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](https://pepy.tech/badge/joypy)](https://pepy.tech/project/joypy)
 
 
 JoyPy is a one-function Python package based on matplotlib + pandas with a single purpose: drawing joyplots (a.k.a. ridgeline plots).
@@ -70,7 +70,7 @@ It's actually on PyPI, because why not:
 
 To install from github, run:
 
-    git clone git@github.com:sbebo/joypy.git
+    git clone git@github.com:leotac/joypy.git
     cd joypy
     pip install .
 
