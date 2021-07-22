@@ -55,7 +55,6 @@ def _setup_axis(ax, x_range, col_name=None, grid=False, ylabelsize=None, yrot=No
     ax.patch.set_alpha(0)
     ax.set_xlim([min(x_range), max(x_range)])
     ax.tick_params(axis='both', which='both', length=0, pad=10)
-    ax.xaxis.set_visible(_DEBUG)
     ax.set_frame_on(_DEBUG)
 
 def _is_numeric(x):
@@ -440,6 +439,9 @@ def _joyplot(data,
 
         num_subgroups = len(group)
 
+        if xgrid:
+            a.grid(xgrid)
+
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
             a.hist(group, label=sublabels, bins=bins, color=color,
@@ -521,6 +523,7 @@ def _joyplot(data,
     # Compute a final axis, used to apply global settings
     last_axis = _axes[-1]
     last_axis.xaxis.set_visible(True)
+    last_axis.tick_params(axis='both', which='both', length=5, pad=10)
 
     # Background color
     if background is not None:
@@ -545,14 +548,8 @@ def _joyplot(data,
     else:
         last_axis.xaxis.set_visible(False)
 
-    last_axis.grid(xgrid)
-
-
-    # Last axis on the back
-    last_axis.zorder = min(a.zorder for a in _axes) - 1
-
     if title is not None:
-        plt.title(title)
+        fig.suptitle(title)
 
 
     # The magic overlap happens here.
