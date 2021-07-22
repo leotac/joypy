@@ -433,14 +433,14 @@ def _joyplot(data,
 
     for i, group in enumerate(data):
         a = _axes[i]
-        group_zorder = i
+        group_zorder = i + 1.6 # grid lines have a zorder of 1.5, so adding anything above 1.5 will ensure all data is plotted above the grid
         if fade:
             kwargs['alpha'] = _get_alpha(i, num_axes)
 
         num_subgroups = len(group)
 
         if xgrid:
-            a.grid(xgrid)
+            a.grid(xgrid, zorder=0)
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
