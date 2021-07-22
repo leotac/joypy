@@ -519,7 +519,8 @@ def _joyplot(data,
             print("Warning: the value of ylim must be either 'max', 'own', or a tuple of length 2. The value you provided has no effect.")
 
     # Compute a final axis, used to apply global settings
-    last_axis = fig.add_subplot(1, 1, 1)
+    last_axis = _axes[-1]
+    last_axis.xaxis.set_visible(True)
 
     # Background color
     if background is not None:
@@ -544,13 +545,11 @@ def _joyplot(data,
     else:
         last_axis.xaxis.set_visible(False)
 
-    last_axis.yaxis.set_visible(False)
     last_axis.grid(xgrid)
 
 
     # Last axis on the back
     last_axis.zorder = min(a.zorder for a in _axes) - 1
-    _axes = list(_axes) + [last_axis]
 
     if title is not None:
         plt.title(title)
