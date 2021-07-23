@@ -440,7 +440,7 @@ def _joyplot(data,
         num_subgroups = len(group)
 
         if xgrid:
-            a.grid(xgrid, zorder=0)
+            a.grid(True, zorder=0)
 
         if hist:
             # matplotlib hist() already handles multiple subgroups in a histogram
@@ -547,6 +547,10 @@ def _joyplot(data,
             last_axis.tick_params(axis='both', which='both',length=0)
     else:
         last_axis.xaxis.set_visible(False)
+    
+    for ax in _axes[:-1]:
+        ax.set_xticks(last_axis.get_xticks())
+        ax.set_xticklabels([])
 
     if title is not None:
         fig.suptitle(title)
