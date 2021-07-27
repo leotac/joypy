@@ -527,7 +527,7 @@ def _joyplot(data,
 
     # Background color
     if background is not None:
-        last_axis.patch.set_facecolor(background)
+        fig.patch.set_facecolor(background)
 
     for side in ['top', 'bottom', 'left', 'right']:
         last_axis.spines[side].set_visible(_DEBUG)
