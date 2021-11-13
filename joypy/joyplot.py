@@ -295,25 +295,17 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 raise e
 
     elif kind == "lognorm":
-  
         try:
-        #    print('got "kind = lognorm":')
-        #    print('v:',len(v),v)
-         #   print('x_range:',len(x_range),x_range)
-            
             lnparam = stats.lognorm.fit(v,floc=0)
-            print('lnparam:',lnparam)
-        #    lbins = np.linspace(0.0,0.08,50)
-            lpdf =  stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
-        #    lpdf = lpdf/lpdf.sum()
+            lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
+            lpdf = lpdf/lpdf.sum()
             y = lpdf
-        #    print('y:',len(y),y)
-        except ValueError:
+        except:
+            print('stats.lognorm.fit(v,floc=0) failed for',v)
             # Handle cases where there is no data in a group.
             y = np.zeros_like(x_range)
             print('y:',len(y),y.max())
-    #    raise NotImplementedError
-    #    if (1):sys.exit(1)
+
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
