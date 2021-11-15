@@ -6,6 +6,7 @@ import scipy.stats as stats
 import warnings
 
 import sys
+import pandas as pd
 
 try:
     # pandas < 0.25
@@ -295,16 +296,37 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 raise e
 
     elif kind == "lognorm":
+    #   lnargs = {}
+        for kw in kwargs:
+        #   print(kw, ":", kwargs[kw])
+            if (kw != 'floc' and kw != 'dividebysum'):
+            #   lnargs[kw] = kwargs[kw]
+                dividebysum = kwargs['dividebysum']
+                floc = kwargs['floc']
+        print(type(kwargs))
+        print(kwargs)
+        print(kind,dividebysum,floc)
+        
         try:
             lnparam = stats.lognorm.fit(v,floc=0)
-            lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
-            lpdf = lpdf/lpdf.sum()
+        except ValueError:
+            print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
+        #    y = np.zeros_like(x_range)
+        #    print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
+            print('v:',len(v))#,v.min(),v.max())
+        #    print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
+            sys.exit(1)
+            
+            
+        print(floc,'lnparam:',lnparam)
+        lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
+        print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
+        if dividebysum:
+            y = lpdf/lpdf.sum()
+        else:    
             y = lpdf
-        except:
-            print('stats.lognorm.fit(v,floc=0) failed for',v)
-            # Handle cases where there is no data in a group.
-            y = np.zeros_like(x_range)
-            print('y:',len(y),y.max())
+        
+       
 
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
@@ -325,8 +347,14 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         x_range = list(range(len(y)))
     else:
         raise NotImplementedError
-
+   
     if fill:
+                  # dividebysum
+        del kwargs['dividebysum']
+                  # floc)
+        del kwargs['floc']
+        print(kwargs)
+  
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 
         # Hack to have a border at the bottom at the fill patch
@@ -344,8 +372,10 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
     # we only want one entry per group in the legend (if shown).
     if fill:
         kwargs["label"] = None
-
+        
     ax.plot(x_range, y, clip_on=clip_on, **kwargs)
+
+    
 
 ###########################################
 
