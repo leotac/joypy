@@ -299,33 +299,58 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
     #   lnargs = {}
         for kw in kwargs:
         #   print(kw, ":", kwargs[kw])
-            if (kw != 'floc' and kw != 'dividebysum'):
+            if (kw != 'floc' and kw != 'normalize'):
             #   lnargs[kw] = kwargs[kw]
-                dividebysum = kwargs['dividebysum']
+                normalize = kwargs['normalize']
                 floc = kwargs['floc']
-        print(type(kwargs))
-        print(kwargs)
-        print(kind,dividebysum,floc)
+       #print(type(kwargs))
+       #print(kwargs)
+       #print(kind,normalize,floc)
         
         try:
-            lnparam = stats.lognorm.fit(v,floc=0)
-        except ValueError:
-            print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
+            if floc is not None:
+                lnparam = stats.lognorm.fit(v,loc=floc)
+            else:    
+                lnparam = stats.lognorm.fit(v) #,loc=floc)
+            
+    #    except: ValueError:
+        except Exception as exception:
+            assert type(exception).__name__ == 'NameError'
+            assert exception.__class__.__name__ == 'NameError'
+            assert exception.__class__.__qualname__ == 'NameError'    
+           #print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
         #    y = np.zeros_like(x_range)
-        #    print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
-            print('v:',len(v))#,v.min(),v.max())
-        #    print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
+        #   #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
+           #print('v:',len(v))#,v.min(),v.max())
+        #   #print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
             sys.exit(1)
             
             
-        print(floc,'lnparam:',lnparam)
-        lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
-        print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
-        if dividebysum:
-            y = lpdf/lpdf.sum()
-        else:    
-            y = lpdf
-        
+       #print(floc,'lnparam:',lnparam)
+       # print('    ',lnparam)
+        try:
+           lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
+       #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
+           if normalize:
+               y = lpdf/lpdf.sum()
+           else:    
+               y = lpdf
+           
+           zmask = y <= 0.0
+           nzcount = len(y[zmask])
+           print(y.min(),y.max(),y.mean(),y.sum(),nzcount)
+           #print(y)
+        except Exception as exception:
+            assert type(exception).__name__ == 'NameError'
+            assert exception.__class__.__name__ == 'NameError'
+            assert exception.__class__.__qualname__ == 'NameError'    
+           #print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
+        #    y = np.zeros_like(x_range)
+        #   #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
+           #print('v:',len(v))#,v.min(),v.max())
+        #   #print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
+            sys.exit(1)
+       
        
 
     elif kind == "counts":
@@ -349,11 +374,11 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         raise NotImplementedError
    
     if fill:
-                  # dividebysum
-        del kwargs['dividebysum']
+                  # normalize
+        del kwargs['normalize']
                   # floc)
         del kwargs['floc']
-        print(kwargs)
+       #print(kwargs)
   
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 
@@ -479,6 +504,11 @@ def _joyplot(data,
         assert all(len(g) == len(colormap) for g in data)
 
     for i, group in enumerate(data):
+        if (labels[i] is not None):
+            print('----',i,labels[i])
+        else:
+            print('----',i)
+            
         a = _axes[i]
         group_zorder = i
         if fade:
