@@ -296,16 +296,10 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 raise e
 
     elif kind == "lognorm":
-    #   lnargs = {}
         for kw in kwargs:
-        #   print(kw, ":", kwargs[kw])
             if (kw != 'floc' and kw != 'normalize'):
-            #   lnargs[kw] = kwargs[kw]
                 normalize = kwargs['normalize']
                 floc = kwargs['floc']
-       #print(type(kwargs))
-       #print(kwargs)
-       #print(kind,normalize,floc)
         
         try:
             if floc is not None:
@@ -317,45 +311,21 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
             print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
             print('Exception:',exception.__class__.__name__)
             print('v:',v)
-        #    assert type(exception).__name__ == 'NameError'
-        #    assert exception.__class__.__name__ == 'NameError'
-        #    assert exception.__class__.__qualname__ == 'NameError'    
-           #print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
-        #    y = np.zeros_like(x_range)
-        #   #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
-           #print('v:',len(v))#,v.min(),v.max())
-        #   #print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
             sys.exit(1)
             
             
-       #print(floc,'lnparam:',lnparam)
-       # print('    ',lnparam)
         try:
            lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
-       #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
            if normalize:
                y = lpdf/lpdf.sum()
            else:    
                y = lpdf
            
-           zmask = y < 0.0
-           nzcount = len(y[zmask])
-           pmask = pd.Series(y >= 0.0)
-           pcount = pmask.value_counts()[1]
-        #   print(y.min(),y.max(),y.mean(),y.sum(),nzcount,pcount)
-          
         except Exception as exception:
            print('stats.lognorm.pdf(v,loc=floc) failed')#' for',v)
            print(exception.__class__.__name__)
            print('lnparam:',lnparam)
            print('lpdf:',lpdf)
-           # assert type(exception).__name__ == 'NameError'
-           # assert exception.__class__.__name__ == 'NameError'
-           #assert exception.__class__.__qualname__ == 'NameError'    
-          #    y = np.zeros_like(x_range)
-        #   #print('lpdf:',len(lpdf),lpdf.min(),lpdf.max())
-           #print('v:',len(v))#,v.min(),v.max())
-        #   #print('stats.lognorm.fit(v,floc=0) failed')#' for',v)  
            sys.exit(1)
        
        
@@ -381,12 +351,9 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         raise NotImplementedError
    
     if fill:
-                  # normalize
         del kwargs['normalize']
-                  # floc)
         del kwargs['floc']
-       #print(kwargs)
-  
+       
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 
         # Hack to have a border at the bottom at the fill patch
@@ -512,19 +479,8 @@ def _joyplot(data,
     if isinstance(colormap, list):
         assert all(len(g) == len(colormap) for g in data)
         
-    ln_stuff = pd.DataFrame(columns=['date','shape','loc','scale'],
-                            index=range(0,len(data)))
-
-    #df.astype({'col1': 'int32'}).dtypes
-    ln_stuff.astype( dtype={'date':'object','shape':'float','loc':'float','scale':'float'}).dtypes
-
-
     for i, group in enumerate(data):
-        if (labels[i] is not None):
-            print('----',i,labels[i])
-        else:
-            print('----',i)
-            
+           
         a = _axes[i]
         group_zorder = i
         if fade:
@@ -563,21 +519,12 @@ def _joyplot(data,
 
                 element_zorder = group_zorder + j/(num_subgroups+1)
                 element_color = _get_color(i, num_axes, j, num_subgroups)
-                
-                #print('group',i,'subgroup',j)
-
-                ln_par = plot_density(a, x_range, subgroup,
+               
+                plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, label=sublabel,
                              zorder=element_zorder, color=element_color,
                              bins=bins, **kwargs)
-                
-                #ln_row = pd.Series(labels[i])
-                #ln_row.append(ln_par,ignore_index=True)
-                ln_stuff['date'][i] = labels[i]
-                for k in range(0,3):
-                    ln_stuff.iloc[i,k+1] = ln_par[k]
-
-
+                                
         # Setup the current axis: transparency, labels, spines.
         col_name = None if labels is None else labels[i]
         _setup_axis(a, global_x_range, col_name=col_name, grid=ygrid,
@@ -660,8 +607,5 @@ def _joyplot(data,
     h_pad = 5 + (- 5*(1 + overlap))
     fig.tight_layout(h_pad=h_pad)
     
-    ln_stuff.to_csv('ln_stuff.csv', index=True)
-
-
     return fig, _axes
 

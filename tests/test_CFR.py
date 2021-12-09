@@ -19,6 +19,8 @@ labels = CFR['date'].unique()
 for i in range(1,len(labels)):
     if labels[i].split('-')[2] != '01':
         labels[i] = None
+print('This might take a while. It is drawing',len(labels),
+      'lognormal density functions')
 fig,axes = joyplot(CFR[zmask], by='date', column='ratio', labels = labels,
                        kind = 'lognorm', range_style='own', tails = 0.1, 
                        overlap = 4, x_range=[0.0,0.061], grid="y",
