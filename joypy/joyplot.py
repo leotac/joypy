@@ -305,7 +305,7 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
             if floc is not None:
                 lnparam = stats.lognorm.fit(v,loc=floc)
             else:    
-                lnparam = stats.lognorm.fit(v)#,loc=floc)
+                lnparam = stats.lognorm.fit(v)
         
         except Exception as exception:
             print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
@@ -351,8 +351,11 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         raise NotImplementedError
    
     if fill:
-        del kwargs['normalize']
-        del kwargs['floc']
+        try:
+            del kwargs['normalize']
+            del kwargs['floc']
+        except(KeyError):
+            pass
        
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 

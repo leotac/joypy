@@ -8,7 +8,8 @@ Created on Fri Nov 12 14:51:11 2021
 import sys
 joypy_dir = '/home/jsibert/Projects/Python/joypy'
 sys.path.append(joypy_dir)
-from joypy import joyplot
+#from joypy import joyplot
+import joypy
 
 import pandas as pd
 from matplotlib import cm
@@ -21,7 +22,7 @@ for i in range(1,len(labels)):
         labels[i] = None
 print('This might take a while. It is drawing',len(labels),
       'lognormal density functions')
-fig,axes = joyplot(CFR[zmask], by='date', column='ratio', labels = labels,
+fig,axes = joypy.joyplot(CFR[zmask], by='date', column='ratio', labels = labels,
                        kind = 'lognorm', range_style='own', tails = 0.1, 
                        overlap = 4, x_range=[0.0,0.061], grid="y",
                        linewidth=0.25, figsize=(6.5,9.0),
