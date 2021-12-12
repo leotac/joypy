@@ -1,4 +1,3 @@
-import os
 import numpy as np
 from scipy.stats import gaussian_kde
 import scipy.stats as stats
@@ -6,7 +5,6 @@ import scipy.stats as stats
 import warnings
 
 import sys
-import pandas as pd
 
 try:
     # pandas < 0.25
@@ -100,6 +98,8 @@ def joyplot(data, column=None, by=None, grid=False,
             title=None,
             colormap=None,
             color=None,
+            normalize=True, 
+            floc=None,
             **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
@@ -253,13 +253,16 @@ def joyplot(data, column=None, by=None, grid=False,
                     title=title,
                     colormap=colormap,
                     color=color,
+                    normalize=normalize, 
+                    floc=floc,
                     **kwds)
 
 ###########################################
 
 def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                  bins=50,
-                 fill=False, linecolor=None, clip_on=True, **kwargs):
+                 fill=False, linecolor=None, clip_on=True, 
+                 normalize=True, floc=None,**kwargs):
     """ Draw a density plot given an axis, an array of values v and an array
         of x positions where to return the estimated density.
     """
@@ -296,10 +299,6 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 raise e
 
     elif kind == "lognorm":
-        for kw in kwargs:
-            if (kw != 'floc' and kw != 'normalize'):
-                normalize = kwargs['normalize']
-                floc = kwargs['floc']
         
         try:
             if floc is not None:
@@ -351,12 +350,7 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         raise NotImplementedError
    
     if fill:
-        try:
-            del kwargs['normalize']
-            del kwargs['floc']
-        except(KeyError):
-            pass
-       
+          
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 
         # Hack to have a border at the bottom at the fill patch
@@ -399,6 +393,8 @@ def _joyplot(data,
              title=None,
              legend=False, loc="upper right",
              colormap=None, color=None,
+             normalize=True, 
+             floc=None,
              **kwargs):
     """
     Internal method.
