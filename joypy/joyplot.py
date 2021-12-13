@@ -371,10 +371,7 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         
     ax.plot(x_range, y, clip_on=clip_on, **kwargs)
 
-    if kind == "lognorm":
-        return lnparam
- 
-
+    
 ###########################################
 
 def _joyplot(data,
