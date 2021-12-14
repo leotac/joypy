@@ -7,6 +7,8 @@ from matplotlib import cm
 
 import pytest
 
+print('joypy version',joypy.__version__)
+
 @pytest.fixture
 def iris():
     return pd.read_csv("data/iris.csv")
@@ -14,6 +16,10 @@ def iris():
 @pytest.fixture
 def temp():
     return pd.read_csv("data/daily_temp.csv", comment="%")
+
+@pytest.fixture
+def CFR():
+    return pd.read_csv("data/CFR.csv",comment='#')
 
 def test_basic(iris):
     fig, axes = joypy.joyplot(iris)
@@ -45,4 +51,18 @@ def test_raw_data():
     x = np.arange(0, 100, 0.1)
     y =[n*x for n in range(1,4)]
     fig, ax = joypy.joyplot(y, labels=["a","b","c"])
-
+    
+def test_lognorm(CFR):
+    zmask = CFR['ratio'] > 0
+    labels = CFR['date'].unique()
+    for i in range(1,len(labels)):
+        if labels[i].split('-')[2] != '01':
+            labels[i] = None
+    fig,axes = joypy.joyplot(CFR[zmask], by='date', column='ratio', labels = labels,
+                           kind = 'lognorm', range_style='own', tails = 0.1, 
+                           overlap = 4, x_range=[0.0,0.061], grid="y",
+                           linewidth=0.25, figsize=(6.5,9.0),
+                           title='Case Fatality Ratio',
+                           colormap=cm.Blues_r,
+                           ylim = 'own',
+                           normalize = True, floc=None)       

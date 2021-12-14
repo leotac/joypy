@@ -4,8 +4,6 @@ import scipy.stats as stats
 
 import warnings
 
-import sys
-
 try:
     # pandas < 0.25
     from pandas.plotting._tools import (_subplots, _flatten)
@@ -145,7 +143,7 @@ def joyplot(data, column=None, by=None, grid=False,
     kwds : other plotting keyword arguments
         To be passed to hist/kde plot function
     """
-
+   
     if column is not None:
         if not isinstance(column, (list, np.ndarray)):
             column = [column]
@@ -299,36 +297,16 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                 raise e
 
     elif kind == "lognorm":
-        
-        try:
-            if floc is not None:
-                lnparam = stats.lognorm.fit(v,loc=floc)
-            else:    
-                lnparam = stats.lognorm.fit(v)
-        
-        except Exception as exception:
-            print('stats.lognorm.fit(v,loc=floc) failed')#' for',v)
-            print('Exception:',exception.__class__.__name__)
-            print('v:',v)
-            sys.exit(1)
+        if floc is not None:
+            lnparam = stats.lognorm.fit(v,loc=floc)
+        else:    
+            lnparam = stats.lognorm.fit(v)
             
-            
-        try:
-           lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
-           if normalize:
-               y = lpdf/lpdf.sum()
-           else:    
-               y = lpdf
-           
-        except Exception as exception:
-           print('stats.lognorm.pdf(v,loc=floc) failed')#' for',v)
-           print(exception.__class__.__name__)
-           print('lnparam:',lnparam)
-           print('lpdf:',lpdf)
-           sys.exit(1)
-       
-       
-
+        lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
+        if normalize:
+            y = lpdf/lpdf.sum()
+        else:    
+            y = lpdf
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
@@ -348,7 +326,7 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         x_range = list(range(len(y)))
     else:
         raise NotImplementedError
-   
+        
     if fill:
           
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
