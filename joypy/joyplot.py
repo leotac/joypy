@@ -1,6 +1,7 @@
-import os
 import numpy as np
 from scipy.stats import gaussian_kde
+import scipy.stats as stats
+
 import warnings
 
 try:
@@ -95,6 +96,8 @@ def joyplot(data, column=None, by=None, grid=False,
             title=None,
             colormap=None,
             color=None,
+            normalize=True, 
+            floc=None,
             **kwds):
     """
     Draw joyplot of a DataFrame, or appropriately nested collection,
@@ -140,7 +143,7 @@ def joyplot(data, column=None, by=None, grid=False,
     kwds : other plotting keyword arguments
         To be passed to hist/kde plot function
     """
-
+   
     if column is not None:
         if not isinstance(column, (list, np.ndarray)):
             column = [column]
@@ -248,13 +251,16 @@ def joyplot(data, column=None, by=None, grid=False,
                     title=title,
                     colormap=colormap,
                     color=color,
+                    normalize=normalize, 
+                    floc=floc,
                     **kwds)
 
 ###########################################
 
 def plot_density(ax, x_range, v, kind="kde", bw_method=None,
                  bins=50,
-                 fill=False, linecolor=None, clip_on=True, **kwargs):
+                 fill=False, linecolor=None, clip_on=True, 
+                 normalize=True, floc=None,**kwargs):
     """ Draw a density plot given an axis, an array of values v and an array
         of x positions where to return the estimated density.
     """
@@ -290,6 +296,17 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
             else:
                 raise e
 
+    elif kind == "lognorm":
+        if floc is not None:
+            lnparam = stats.lognorm.fit(v,loc=floc)
+        else:    
+            lnparam = stats.lognorm.fit(v)
+            
+        lpdf = stats.lognorm.pdf(x_range,lnparam[0],lnparam[1],lnparam[2])
+        if normalize:
+            y = lpdf/lpdf.sum()
+        else:    
+            y = lpdf
     elif kind == "counts":
         y, bin_edges = np.histogram(v, bins=bins, range=(min(x_range), max(x_range)))
         # np.histogram returns the edges of the bins.
@@ -309,8 +326,9 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
         x_range = list(range(len(y)))
     else:
         raise NotImplementedError
-
+        
     if fill:
+          
         ax.fill_between(x_range, 0.0, y, clip_on=clip_on, **kwargs)
 
         # Hack to have a border at the bottom at the fill patch
@@ -328,9 +346,10 @@ def plot_density(ax, x_range, v, kind="kde", bw_method=None,
     # we only want one entry per group in the legend (if shown).
     if fill:
         kwargs["label"] = None
-
+        
     ax.plot(x_range, y, clip_on=clip_on, **kwargs)
 
+    
 ###########################################
 
 def _joyplot(data,
@@ -349,6 +368,8 @@ def _joyplot(data,
              title=None,
              legend=False, loc="upper right",
              colormap=None, color=None,
+             normalize=True, 
+             floc=None,
              **kwargs):
     """
     Internal method.
@@ -431,8 +452,9 @@ def _joyplot(data,
         assert all(len(g) <= len(color) for g in data)
     if isinstance(colormap, list):
         assert all(len(g) == len(colormap) for g in data)
-
+        
     for i, group in enumerate(data):
+           
         a = _axes[i]
         group_zorder = i
         if fade:
@@ -471,13 +493,12 @@ def _joyplot(data,
 
                 element_zorder = group_zorder + j/(num_subgroups+1)
                 element_color = _get_color(i, num_axes, j, num_subgroups)
-
+               
                 plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, label=sublabel,
                              zorder=element_zorder, color=element_color,
                              bins=bins, **kwargs)
-
-
+                                
         # Setup the current axis: transparency, labels, spines.
         col_name = None if labels is None else labels[i]
         _setup_axis(a, global_x_range, col_name=col_name, grid=ygrid,
@@ -559,7 +580,6 @@ def _joyplot(data,
     # The magic overlap happens here.
     h_pad = 5 + (- 5*(1 + overlap))
     fig.tight_layout(h_pad=h_pad)
-
-
+    
     return fig, _axes
 
