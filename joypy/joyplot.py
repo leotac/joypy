@@ -497,7 +497,8 @@ def _joyplot(data,
                 plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, label=sublabel,
                              zorder=element_zorder, color=element_color,
-                             bins=bins, **kwargs)
+                             bins=bins, normalize=normalize, floc=floc,
+                             **kwargs)
 
         # Setup the current axis: transparency, labels, spines.
         col_name = None if labels is None else labels[i]
