@@ -462,38 +462,36 @@ def _joyplot(data,
 
         num_subgroups = len(group)
 
-        if hist:
-            # matplotlib hist() already handles multiple subgroups in a histogram
-            a.hist(group, label=sublabels, bins=bins, color=color,
-                   range=[min(global_x_range), max(global_x_range)],
-                   edgecolor=linecolor, zorder=group_zorder, **kwargs)
-        else:
-            for j, subgroup in enumerate(group):
+        for j, subgroup in enumerate(group):
 
-                # Compute the x_range of the current plot
-                if range_style == 'all':
-                # All plots have the same range
-                    x_range = global_x_range
-                elif range_style == 'own':
-                # Each plot has its own range
-                    x_range = _x_range(subgroup, tails)
-                elif range_style == 'group':
-                # Each plot has a range that covers the whole group
-                    x_range = _x_range(group, tails)
-                elif isinstance(range_style, (list, np.ndarray)):
-                # All plots have exactly the range passed as argument
-                    x_range = _x_range(range_style, 0.0)
-                else:
-                    raise NotImplementedError("Unrecognized range style.")
+            # Compute the x_range of the current plot
+            if range_style == 'all':
+            # All plots have the same range
+                x_range = global_x_range
+            elif range_style == 'own':
+            # Each plot has its own range
+                x_range = _x_range(subgroup, tails)
+            elif range_style == 'group':
+            # Each plot has a range that covers the whole group
+                x_range = _x_range(group, tails)
+            elif isinstance(range_style, (list, np.ndarray)):
+            # All plots have exactly the range passed as argument
+                x_range = _x_range(range_style, 0.0)
+            else:
+                raise NotImplementedError("Unrecognized range style.")
 
-                if sublabels is None:
-                    sublabel = None
-                else:
-                    sublabel = sublabels[j]
+            if sublabels is None:
+                sublabel = None
+            else:
+                sublabel = sublabels[j]
 
-                element_zorder = group_zorder + j/(num_subgroups+1)
-                element_color = _get_color(i, num_axes, j, num_subgroups)
+            element_zorder = group_zorder + j/(num_subgroups+1)
+            element_color = _get_color(i, num_axes, j, num_subgroups)
 
+            if hist:
+                a.hist(subgroup, label=sublabel, bins=bins, color=element_color,
+                       range=x_range, edgecolor=linecolor, zorder=element_zorder, **kwargs)
+            else:
                 plot_density(a, x_range, subgroup,
                              fill=fill, linecolor=linecolor, label=sublabel,
                              zorder=element_zorder, color=element_color,
@@ -582,4 +580,3 @@ def _joyplot(data,
     fig.tight_layout(h_pad=h_pad)
 
     return fig, _axes
-
